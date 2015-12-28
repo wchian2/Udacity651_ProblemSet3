@@ -1,0 +1,44 @@
+---
+title: "Health Expenditures from 1995 to 2010"
+author: "William W. Chiang"
+date: "December 28, 2015"
+output: html_document
+---
+
+##Read health data
+```{r}
+health <- read.csv('indicator_government_health_spending1.csv')
+```
+
+
+##Rename column labels
+```{r}
+colnames(health) <- c("Country", 1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010)
+```
+
+
+##Install reshape2 package used to reshape the health data frame
+```{r}
+library(reshape2)
+reshaped_health <- melt(health)
+colnames(reshaped_health) <- c("Country", "Year", "Cost")
+```
+
+
+##Create plot of the change in healthcare expenditures over time for the United States, United Kingdom, Canada, Germany, and France
+```{r}
+library(ggplot2)
+ggplot(reshaped_health, aes(x = Year, y = Cost, color = Country)) +
+  geom_point(data = subset(reshaped_health, Country %in% c("United States", "United Kingdom", "Canada", "Germany","France")), size = 3) +
+  ggtitle("Total Government Healthcare Expenditures from 1995 to 2010")
+```
+
+
+##Save the plot created
+```{r}
+ggsave('point_graph_healthExpenditures.png')
+```
+
+
+##Overview
+In summary, both Canada and the United States have seen a steady rise in healthcare expenditures from the years 1995 to 2007. The United States, in particular, had a sharp rise approaching 2010, which may be attributed to the passage of the Affordable Care Act of 2010.

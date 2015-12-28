@@ -1,0 +1,55 @@
+---
+title: "Birthday Exercise"
+author: "William W. Chiang"
+date: "December 28, 2015"
+output: html_document
+---
+
+
+## Load lubridate package
+```{r}
+library(lubridate)
+library(dplyr)
+```
+
+
+## Load Facebook birthday dataset
+```{r}
+bday <- read.csv('birthdaysExample.csv')
+```
+
+
+## Parse dates, e.g. 8/1/1985 to 1985-08-01
+```{r}
+bday$dates <- mdy(bday$dates)
+```
+
+
+## Determine the number of people sharing my birthday
+```{r}
+sharedBday <- length(bday %>% filter(month(dates) == 8 & day(dates) == 1))
+```
+
+
+## Sort the number of birthdays in each month
+```{r}
+sortedCounts <- bday %>%
+  mutate(monthnum = month(dates)) %>%
+  group_by(monthnum) %>%
+  summarize(n=n()) %>%
+  arrange(desc(n))
+bdayMonthName <- month.name[sortedCounts$monthnum[1]]
+sortedCounts <- sortedCounts %>% arrange(monthnum)
+```
+
+
+## Print to console the number of birthdays for a given month
+```{r}
+print.data.frame(sortedCounts %>% transmute(Month=month.name[monthnum], Count=n), row.names=F)
+```
+
+
+##Summary
+One person shares my birthday
+
+March is the month that contains the most number of birthdays
